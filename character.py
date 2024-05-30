@@ -1,10 +1,9 @@
 import pygame
-from pygame import surface
 
 
 class Character(pygame.sprite.Sprite):
 
-    def __init__(self, cx, cy, image, borders: tuple):
+    def __init__(self, cx, cy, image, borders: tuple = (1200, 800)):
         super().__init__()
         self.image = image
         # rect represents out character, and save its position
