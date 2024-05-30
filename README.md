@@ -17,6 +17,7 @@ This is an overview of our project. For more details, see the following sections
 <br>Adam:
 - class Character
 - player (movement)
+- enemies (melee)
 
 
 <br>Mateusz:
@@ -24,8 +25,9 @@ This is an overview of our project. For more details, see the following sections
 - menu
 
 <br>To be allocated:
-- player
+- player (attack, health)
 - level design (obstacles and surfaces)
+- collisions with other objects
 ---
 
 ### Documentation

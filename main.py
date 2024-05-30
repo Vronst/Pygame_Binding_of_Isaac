@@ -1,6 +1,7 @@
 import os
 import pygame
 from player import Player
+from enemies import MeleeEnemy
 
 # pygame setup
 DISPLAY = (1200, 800)
@@ -27,7 +28,8 @@ for file_name in file_names:
     # convert_alpha() is for fast blit into desired surface that's why no normal convert()
     IMAGES[image_name] = pygame.image.load(os.path.join(path, file_name)).convert_alpha(BACKGROUND)
 
-player = Player(100, 100, IMAGES['TEST'], DISPLAY)
+player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, IMAGES['PLAYER'], DISPLAY)
+enemy = MeleeEnemy(100, 100, IMAGES['PLAYER'], DISPLAY, player)
 
 # main loop
 while running:
@@ -42,8 +44,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    enemy.update(None)
+    enemy.draw(screen)
     player.update(pygame.key.get_pressed())
     player.draw(screen)
     pygame.display.update()
+    # lets make it 60fps
+    clock.tick(60)
 
 pygame.quit()

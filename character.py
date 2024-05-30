@@ -22,6 +22,7 @@ class Character(pygame.sprite.Sprite):
 
     def update(self, key_pressed):
         self.get_event(key_pressed=key_pressed)
+        self._move()
 
         # blocking out of border movement
         if self.rect.bottom > self.borders[1]:

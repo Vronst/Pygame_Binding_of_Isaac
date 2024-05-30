@@ -17,3 +17,10 @@ class Player(Character):
             self.rect.move_ip([0, -8])
         if kwargs['key_pressed'][pygame.K_DOWN]:
             self.rect.move_ip([0, 8])
+
+    def attack(self):
+        pass
+
+
+class DetectCollision:
+    pass
