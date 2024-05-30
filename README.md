@@ -4,14 +4,15 @@
 
 <br>The idea of this project is to recreate popular game with the name in title of this project.
 
-Division of work in the project:
-Adam
+Project work allocation:
+<br>Adam:
 - main class Character
-Mateusz:
+
+<br>Mateusz:
 - audio
 - menu
 
-
+<br>To be allocated:
 - enemies
 - player
 - level design (obstacles and surfaces)

@@ -1,13 +1,19 @@
 import pygame
+from character import Character
 
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, image, cx, cy):
-        super().__init__()
-        self.image = image
-        self.rect = self.image.get_rect()
-        self.rect.center = cx, cy
-        self.level = None
+class Player(Character):
 
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
+    def __init__(self, cx, cy, image, border: tuple):
+        super().__init__(cx, cy, image, border)
+
+    def get_event(self, **kwargs):
+
+        if kwargs['key_pressed'][pygame.K_LEFT]:
+            self.rect.move_ip([-8, 0])
+        if kwargs['key_pressed'][pygame.K_RIGHT]:
+            self.rect.move_ip([8, 0])
+        if kwargs['key_pressed'][pygame.K_UP]:
+            self.rect.move_ip([0, -8])
+        if kwargs['key_pressed'][pygame.K_DOWN]:
+            self.rect.move_ip([0, 8])
