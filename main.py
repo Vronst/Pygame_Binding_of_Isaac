@@ -1,7 +1,7 @@
 import os
 import pygame
 from player import Player
-from enemies import MeleeEnemy
+from enemies import MeleeEnemy, RangeEnemy
 
 # pygame setup
 DISPLAY = (1200, 800)
@@ -30,6 +30,8 @@ for file_name in file_names:
 
 player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, IMAGES['PLAYER'], DISPLAY)
 enemy = MeleeEnemy(100, 100, IMAGES['PLAYER'], DISPLAY, player)
+enemy1 = RangeEnemy(100, 300, IMAGES['PLAYER'], DISPLAY, player)
+
 
 # main loop
 while running:
@@ -46,10 +48,11 @@ while running:
 
     enemy.update(None)
     enemy.draw(screen)
+    enemy1.update(None)
+    enemy1.draw(screen)
     player.update(pygame.key.get_pressed())
     player.draw(screen)
     pygame.display.update()
     # lets make it 60fps
     clock.tick(60)
-
 pygame.quit()

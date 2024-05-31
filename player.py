@@ -8,7 +8,7 @@ class Player(Character):
         super().__init__(cx, cy, image, border)
 
     def get_event(self, **kwargs):
-
+        # player moves by [] when key pressed
         if kwargs['key_pressed'][pygame.K_LEFT]:
             self.rect.move_ip([-8, 0])
         if kwargs['key_pressed'][pygame.K_RIGHT]:
@@ -20,7 +20,3 @@ class Player(Character):
 
     def attack(self):
         pass
-
-
-class DetectCollision:
-    pass
