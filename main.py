@@ -1,7 +1,7 @@
 import os
 import pygame
 from player import Player
-from enemies import MeleeEnemy, RangeEnemy
+from enemies import MeleeEnemy, RangeEnemy, DetectCollision
 
 # pygame setup
 DISPLAY = (1200, 800)
@@ -29,14 +29,16 @@ for file_name in file_names:
     IMAGES[image_name] = pygame.image.load(os.path.join(path, file_name)).convert_alpha(BACKGROUND)
 
 player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, IMAGES['PLAYER'], DISPLAY)
-enemy = MeleeEnemy(100, 100, IMAGES['PLAYER'], DISPLAY, player)
-enemy1 = RangeEnemy(100, 300, IMAGES['PLAYER'], DISPLAY, player)
-
+# enemy = MeleeEnemy(100, 100, IMAGES['PLAYER'], DISPLAY, player)
+# enemy1 = RangeEnemy(100, 300, IMAGES['PLAYER'], DISPLAY, player, -3, 5)
+level = DetectCollision(player, DISPLAY, IMAGES, screen, BACKGROUND)
+level.new_level()
 
 # main loop
 while running:
 
     screen.blit(pygame.transform.scale(BACKGROUND, DISPLAY), (0, 0))
+
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
@@ -46,13 +48,17 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    enemy.update(None)
-    enemy.draw(screen)
-    enemy1.update(None)
-    enemy1.draw(screen)
+    # enemy.update(None)
+    # enemy.draw(screen)
+    # enemy1.update(None)
+    # enemy1.draw(screen)
+
+    level.update()  # enemies moves
+    level.draw(screen)
     player.update(pygame.key.get_pressed())
     player.draw(screen)
     pygame.display.update()
+
     # lets make it 60fps
     clock.tick(60)
 pygame.quit()
