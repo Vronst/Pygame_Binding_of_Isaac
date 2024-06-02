@@ -25,10 +25,11 @@ This is an overview of our project. For more details, see the following sections
 - menu
 
 <br>To be allocated:
-- enemies (ranged)
+- enemies (ranged attack)
 - player (attack, health)
 - level design (obstacles and surfaces)
 - collisions with other objects
+- trap doors?
 ---
 
 ### Documentation
