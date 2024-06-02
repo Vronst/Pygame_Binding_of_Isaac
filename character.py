@@ -11,7 +11,9 @@ class Character(pygame.sprite.Sprite):
         self.rect.center = (cx, cy)
         self.borders = borders
 
+
     def _move(self, group):
+
         pass
 
     def get_event(self, **kwargs):
@@ -23,6 +25,7 @@ class Character(pygame.sprite.Sprite):
     def update(self, key_pressed=None, group=None, obstacles=None):
         self.get_event(key_pressed=key_pressed)
         self._move(group)
+
 
         # blocking out of border movement
         # bottom

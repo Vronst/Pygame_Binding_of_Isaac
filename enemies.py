@@ -43,6 +43,7 @@ class Enemy(Character):
                     self.rect.move_ip(-move[0], -move[1])
 
 
+
 class MeleeEnemy(Enemy):
 
     def __init__(self, cx, cy, image, borders, player, move_x=4, move_y=4):
@@ -59,5 +60,6 @@ class RangeEnemy(Enemy):
 
     def attack(self):
         pass
+
 
 

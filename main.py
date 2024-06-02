@@ -34,10 +34,12 @@ player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, IMAGES['PLAYER'], DISPLAY)
 level = DetectCollision(player, DISPLAY, IMAGES, screen, BACKGROUND)
 level.new_level()
 
+
 # main loop
 while running:
 
     screen.blit(pygame.transform.scale(BACKGROUND, DISPLAY), (0, 0))
+
 
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -57,3 +59,4 @@ while running:
     # lets make it 60fps
     clock.tick(60)
 pygame.quit()
+
