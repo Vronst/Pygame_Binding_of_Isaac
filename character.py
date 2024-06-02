@@ -20,7 +20,7 @@ class Character(pygame.sprite.Sprite):
     def draw(self, display):
         display.blit(self.image, self.rect)
 
-    def update(self, key_pressed=None, group=None):
+    def update(self, key_pressed=None, group=None, obstacles=None):
         self.get_event(key_pressed=key_pressed)
         self._move(group)
 

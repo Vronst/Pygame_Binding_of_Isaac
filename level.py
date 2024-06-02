@@ -12,7 +12,7 @@ class DetectCollision:
         self.enemies = {0: (MeleeEnemy, images['PLAYER']), 1: (RangeEnemy, images['PLAYER'])}  # to be more complicated
         self.player = player
         self.set_of_enemies = pygame.sprite.Group()
-        self.set_of_obstacle = pygame.sprite.Group()
+        self.set_of_obstacles = pygame.sprite.Group()
         self.borders = borders
         # for safety run new_level last in init
         self.new_level()
@@ -32,8 +32,8 @@ class DetectCollision:
         # pygame.time.delay(200)
 
     def update(self):
-        self.set_of_enemies.update(group=self.set_of_enemies)
-        self.set_of_obstacle.update()
+        self.set_of_enemies.update(group=self.set_of_enemies, obstacles=self.set_of_obstacles)
+        self.set_of_obstacles.update()
 
     def draw(self, screen):
         self.set_of_enemies.draw(screen)
