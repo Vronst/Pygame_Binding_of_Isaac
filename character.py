@@ -11,7 +11,7 @@ class Character(pygame.sprite.Sprite):
         self.rect.center = (cx, cy)
         self.borders = borders
 
-    def _move(self, group=None):
+    def _move(self, group):
         pass
 
     def get_event(self, **kwargs):

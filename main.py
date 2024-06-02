@@ -1,7 +1,7 @@
 import os
 import pygame
 from player import Player
-from enemies import MeleeEnemy, RangeEnemy, DetectCollision
+from level import DetectCollision
 
 # pygame setup
 DISPLAY = (1200, 800)
@@ -48,12 +48,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # enemy.update(None)
-    # enemy.draw(screen)
-    # enemy1.update(None)
-    # enemy1.draw(screen)
-
-    level.update()  # enemies moves
+    level.update()  # moving enemies
     level.draw(screen)
     player.update(pygame.key.get_pressed())
     player.draw(screen)
