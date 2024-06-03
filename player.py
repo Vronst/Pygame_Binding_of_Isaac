@@ -6,6 +6,9 @@ class Player(Character):
 
     def __init__(self, cx, cy, image, border: tuple):
         super().__init__(cx, cy, image, border)
+    
+    def set_idle_animation_frames(self, frames: list):
+        self.idle_animation_frames = frames
 
     def get_event(self, **kwargs):
         # player moves by [] when key pressed
