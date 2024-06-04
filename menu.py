@@ -15,29 +15,29 @@ DARK_GRAY = (169, 169, 169)
 BLUE = (0, 122, 204)
 LIGHT_BLUE = (0, 162, 255)
 
-#font used in menu
+# font used in menu
 font_path = os.path.join('fonts', 'comicate.ttf')
 font = pygame.font.Font(font_path, 74)
 
-#background
-background_path = os.path.join('images', 'menu-background.jpg')  #setting backgournd image path
-background = pygame.image.load(background_path)  #load background image
-background = pygame.transform.scale(background, DISPLAY)  #background image scaling
+# background
+background_path = os.path.join('images', 'menu-background.jpg')  # setting backgournd image path
+background = pygame.image.load(background_path)  # load background image
+background = pygame.transform.scale(background, DISPLAY)  # background image scaling
 
 
-#definition button class
+# definition button class
 class Button:
     def __init__(self, text, pos, font, text_color=BLACK, hover_text_color=WHITE, bg_color=GRAY,
                  hover_bg_color=DARK_GRAY, border_color=BLACK):
-        self.x, self.y = pos  #button position
-        self.font = font  #button font
-        self.text = text  #button text
-        self.text_color = text_color  #button text color
-        self.hover_text_color = hover_text_color  #button hover text color
-        self.bg_color = bg_color  #button background color
-        self.hover_bg_color = hover_bg_color  #button hover background color
-        self.border_color = border_color  #button border color
-        self.change_text()  #formatting the button
+        self.x, self.y = pos  # button position
+        self.font = font  # button font
+        self.text = text  # button text
+        self.text_color = text_color  # button text color
+        self.hover_text_color = hover_text_color  # button hover text color
+        self.bg_color = bg_color  # button background color
+        self.hover_bg_color = hover_bg_color  # button hover background color
+        self.border_color = border_color  # button border color
+        self.change_text()  # formatting the button
 
     def change_text(self):
         self.rendered_text = self.font.render(self.text, True,
@@ -58,7 +58,7 @@ class Button:
         self.surface.fill(bg_color)  #fill the rect with background color
         pygame.draw.rect(self.surface, self.border_color, self.surface.get_rect(), 2)  #creating a button border
         self.surface.blit(text_surface, text_surface.get_rect(center=(
-        self.surface.get_width() // 2, self.surface.get_height() // 2)))  #display rendered text and centering
+            self.surface.get_width() // 2, self.surface.get_height() // 2)))  #display rendered text and centering
         screen.blit(self.surface, self.rect_surface.topleft)  #display the rect surrounding the text
 
     def click(self, event):

@@ -33,10 +33,16 @@ class DetectCollision:
 
     def update(self):
         self.set_of_enemies.update(group=self.set_of_enemies, obstacles=self.set_of_obstacles)
+        for enemy in self.set_of_enemies:
+            for attack in enemy.attacks:
+                attack.update()
+                attack.draw(self.surface)
+
         self.set_of_obstacles.update()
 
     def draw(self, screen):
         self.set_of_enemies.draw(screen)
+        self.set_of_obstacles.draw(screen)
 
     def pause(self):
         pass
