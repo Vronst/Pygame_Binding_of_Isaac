@@ -21,14 +21,18 @@ This is an overview of our project. For more details, see the following sections
 
 
 <br>Mateusz:
-- audio
+- audio and graphic research
 - menu
+- class Item
+- player (attack, health)
+- collisions
+- simple player idle animation (for now)
 
 <br>To be allocated:
 - enemies (ranged attack)
-- player (attack, health)
+- enemies animations
 - level design (obstacles and surfaces)
-- collisions with other objects
+- collisions with obstacles
 - trap doors?
 ---
 
