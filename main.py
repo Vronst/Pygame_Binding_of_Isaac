@@ -1,6 +1,5 @@
 import os
 import pygame
-import random
 from player import Player
 from item import Heart
 from level import DetectCollision
@@ -55,6 +54,8 @@ item_spawn_interval = 1000
 
 hearts = pygame.sprite.Group() #group of hearts on the screen
 
+collision_detector = DetectCollision(player, DISPLAY, IMAGES, screen, None) #collision detector between player and enemies
+
 # main loop
 while running:
 
@@ -69,13 +70,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    #------------------- obrażenia zadawane graczowi w czasie do testu hp i serduszka (do usunięcia potem)
     current_time = pygame.time.get_ticks() #time from start of the game
-    if current_time - last_health_update >= 1000: 
-        player.take_damage(5)  # -5hp
-        last_health_update = current_time  #reset timer, new damage loop
-    #----------------------------------------------------------------------------------------------------
-
     if current_time - last_item_spawn >= item_spawn_interval:
         new_heart = Heart(heart_image, DISPLAY) #create new heart objcet
         hearts.add(new_heart) #add new_heart to hearts group
@@ -86,8 +81,9 @@ while running:
         heart.heal(player) #heal from collided heart
 
     level.update()  # moving enemies
-    level.draw(screen)
     player.update(pygame.key.get_pressed())
+
+    level.draw(screen)
     player.draw(screen)
     hearts.draw(screen)
     pygame.display.update()

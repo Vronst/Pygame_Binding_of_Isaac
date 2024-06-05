@@ -20,3 +20,22 @@ class Heart(Item):
 
     def heal(self, player):
         player.heal(5)  # +5hp
+
+class EnemyBullet(Item):
+    def __init__(self, cx, cy, image, borders: tuple, direction: str, speed=3):
+        super().__init__(cx, cy, image, borders)
+        self.direction = direction
+        self.speed = speed
+
+    def _move(self, group=None):
+        if self.direction == 'left':
+            self.rect.move_ip((-self.speed, 0))
+        elif self.direction == 'right':
+            self.rect.move_ip(self.speed, 0)
+        elif self.direction == 'up':
+            self.rect.move_ip(0, -self.speed)
+        elif self.direction == 'down':
+            self.rect.move_ip(0, self.speed)
+
+    def update(self, key_pressed=None, group=None, obstacles=None, borders: tuple = (1200, 800)):
+        self._move()

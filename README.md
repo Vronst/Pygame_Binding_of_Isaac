@@ -23,12 +23,10 @@ This is an overview of our project. For more details, see the following sections
 <br>Mateusz:
 - audio
 - menu
-- player (health)
-- class Item
 
 <br>To be allocated:
 - enemies (ranged attack)
-- player (attack)
+- player (attack, health)
 - level design (obstacles and surfaces)
 - collisions with other objects
 - trap doors?

@@ -1,6 +1,7 @@
 import pygame
-
+import os
 from character import Character
+from item import EnemyBullet
 
 
 class Enemy(Character):
@@ -81,7 +82,6 @@ class MeleeEnemy(Enemy):
             self._rest = now
             return True
 
-
 class RangeEnemy(Enemy):
     def __init__(self, cx, cy, image, borders, player, move_x=-3, move_y=5):
         super().__init__(cx, cy, image, borders, player, move_x, move_y)
@@ -90,27 +90,12 @@ class RangeEnemy(Enemy):
     def attack(self, direction: str = 'down'):
         now = pygame.time.get_ticks()
         if now - self._last_cooldown > self.cooldown:
-            bullet = EnemyBullet(self.rect.x, self.rect.y, self.image, self.borders, direction, 3)
+            path = os.path.join(os.getcwd(), 'images')
+            if self.rect.x < self.player.x: #player on the right side
+                bullet_image = pygame.image.load(os.path.join(path, 'bullet_right.png')).convert_alpha()
+            else: #player on the left side
+                bullet_image = pygame.image.load(os.path.join(path, 'bullet_left.png')).convert_alpha()
+
+            bullet = EnemyBullet(self.rect.x, self.rect.y, bullet_image, self.borders, direction, 3)
             self._last_cooldown = now
             return bullet
-
-
-class EnemyBullet(Character):
-    def __init__(self, cx, cy, image, borders: tuple, direction: str, speed=3):
-        super().__init__(cx, cy, image, borders)
-        self.direction = direction
-        self.speed = speed
-
-    def _move(self, group=None):
-        if self.direction == 'left':
-            self.rect.move_ip((-self.speed, 0))
-        elif self.direction == 'right':
-            self.rect.move_ip(self.speed, 0)
-        elif self.direction == 'up':
-            self.rect.move_ip(0, -self.speed)
-        elif self.direction == 'down':
-            self.rect.move_ip(0, self.speed)
-
-    def update(self, key_pressed=None, group=None, obstacles=None, borders: tuple = (1200, 800)):
-        # if self.rect.y > self.borders[1] or self.rect.y < 0 or self.rect.x < 0 or self.rect.x > self.borders[0]:
-        self._move()
