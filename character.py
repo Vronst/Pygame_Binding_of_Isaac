@@ -37,3 +37,6 @@ class Character(pygame.sprite.Sprite):
         # right
         if self.rect.centerx > self.borders[0] - 50:
             self.rect.centerx = self.borders[0] - 50
+
+    def tired(self):
+        return False

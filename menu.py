@@ -20,7 +20,7 @@ arrow_font_path = os.path.join('fonts', 'Arrows.ttf')
 font = pygame.font.Font(font_path, 74)
 arrow_font = pygame.font.Font(arrow_font_path, 44)
 medium_font = pygame.font.Font(font_path, 54)
-small_font = pygame.font.Font(font_path, 24)
+small_font = pygame.font.Font(font_path, 30)
 
 #background
 background_path = os.path.join('images', 'menu-background.jpg') #setting backgournd image path
@@ -104,7 +104,6 @@ def show_instructions():
         instructions_back_rect = instructions_back.get_rect(center=(DISPLAY[0] // 2, 600))
         instructions_background.blit(instructions_back, instructions_back_rect)
 
-
         screen.blit(instructions_background, (0, 0))
 
         #back action when escape is pressed
@@ -117,6 +116,45 @@ def show_instructions():
                     return
 
             pygame.display.update()
+
+def show_about():
+        about_background_path = os.path.join('images', 'about-background.jpg') #setting about image path
+        about_background = pygame.image.load(about_background_path) #load about image
+        about_background = pygame.transform.scale(about_background, DISPLAY) #about image scaling
+
+        #creating about title text
+        about_text = font.render("Team", True, WHITE)
+        about_rect = about_text.get_rect(center=(DISPLAY[0] // 2, 150))
+        about_background.blit(about_text, about_rect)
+
+        #creating instruction move text
+        about_team1 = small_font.render("Mateusz Ryszawy", True, WHITE)
+        about_team1_rect = about_team1.get_rect(center=(DISPLAY[0] // 2, 250))
+        about_background.blit(about_team1, about_team1_rect)
+
+        #creating instruction arrows text
+        about_team2 = small_font.render("Adam Sarga", True, WHITE)
+        about_team2_rect = about_team2.get_rect(center=(DISPLAY[0] // 2, 300))
+        about_background.blit(about_team2, about_team2_rect)
+
+        #creating back text
+        about_back = small_font.render("press escape to return to the menu", True, WHITE)
+        about_back_rect = about_back.get_rect(center=(DISPLAY[0] // 2, 775))
+        about_background.blit(about_back, about_back_rect)
+
+        screen.blit(about_background, (0, 0))
+
+        #back action when escape is pressed
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    return
+
+            pygame.display.update()
+
 
 def main_menu():
     buttons = [
@@ -141,7 +179,7 @@ def main_menu():
                         import main #start the game by import main module
                         main.main()
                     elif button.text == "About":
-                        print("trzeba dodać info o nas") #about us
+                        show_about() #start about section
                     elif button.text == "Instructions":
                         show_instructions() #start instructions
                     elif button.text == "Quit":
