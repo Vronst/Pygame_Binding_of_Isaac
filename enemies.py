@@ -63,6 +63,9 @@ class Enemy(Character):
     def attack(self, direction: str = 'down'):
         pass
 
+    def is_melee(self):
+        return self._melee
+
 
 class MeleeEnemy(Enemy):
 
@@ -85,7 +88,7 @@ class MeleeEnemy(Enemy):
 class RangeEnemy(Enemy):
     def __init__(self, cx, cy, image, borders, player, move_x=-3, move_y=5):
         super().__init__(cx, cy, image, borders, player, move_x, move_y)
-        self.melee = False
+        self._melee = False
 
     def attack(self, direction: str = 'down'):
         now = pygame.time.get_ticks()
