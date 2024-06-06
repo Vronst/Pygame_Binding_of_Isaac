@@ -7,6 +7,7 @@ from enemies import *
 class DetectCollision:
 
     def __init__(self, player: Character, borders: tuple, images: dict, surface: pygame.Surface, background):
+        self.difficulty = 3
         self.background = background
         self.surface = surface
         self.enemies = {0: (MeleeEnemy, images['MELEE_ENEMY']), 1: (RangeEnemy, images['RANGE_ENEMY'])}  # to be more complicated
@@ -19,7 +20,7 @@ class DetectCollision:
         self.new_level()
 
     def new_level(self):
-        for _ in range(randint(0, 4)):
+        for _ in range(randint(0, self.difficulty)):
             # shot purpose is to choose melee or range enemy and their image
             shot = randint(0, len(self.enemies) - 1)
             new = (self.enemies[shot][0]
@@ -52,6 +53,12 @@ class DetectCollision:
         self.bad_touch() #taking damage by colliding with enemy
         self.set_of_obstacles.update()
 
+        # for enemy in self.set_of_enemies:
+        #     if pygame.sprite.spritecollideany(self.player, enemy.attacks):
+        #         self.restart()
+        #     if self.player.rect.colliderect(enemy) and enemy.is_melee():
+        #         self.restart()
+
     def draw(self, screen):
         self.set_of_enemies.draw(screen)
         self.set_of_obstacles.draw(screen)
@@ -59,11 +66,17 @@ class DetectCollision:
     def pause(self):
         pass
 
-    def bad_touch(self): #taking damage by touching an enemy
+    def bad_touch(self):  # taking damage by touching an enemy
         current_time = pygame.time.get_ticks()
         collided_enemy = pygame.sprite.spritecollideany(self.player, self.set_of_enemies)
         if pygame.sprite.spritecollideany(self.player, self.set_of_enemies):
-            if current_time - self.last_damage_time >= 1000:  #interval between last taking damage
-                self.player.take_damage(2) # -2hp
-                self.last_damage_time = current_time  #reset damage timer
-            self.set_of_enemies.remove(collided_enemy) #remove collided enemy
+            if current_time - self.last_damage_time >= 1000:  # interval between last taking damage
+                self.player.take_damage(2)  # -2hp
+                self.last_damage_time = current_time  # reset damage timer
+            self.set_of_enemies.remove(collided_enemy)  # remove collided enemy
+
+    def restart(self):
+        self.set_of_enemies.empty()
+        self.set_of_obstacles.empty()
+        self.new_level()
+
