@@ -18,7 +18,10 @@ This is an overview of our project. For more details, see the following sections
 - class Character
 - player (movement)
 - enemies (melee)
-
+- enemy collision
+- doors and rooms
+- enemies (ranged attack, no graphic)
+- readme
 
 <br>Mateusz:
 - audio and graphic research
@@ -29,16 +32,15 @@ This is an overview of our project. For more details, see the following sections
 - simple player idle animation (for now)
 
 <br>To be allocated:
-- enemies (ranged attack)
+
 - enemies animations
 - level design (obstacles and surfaces)
 - collisions with obstacles
-- trap doors?
 ---
 
 ### Documentation
 <br>
-<a href="https://www.pygame.org/docs/">Pyggame documentation</a>
+<a href="https://www.pygame.org/docs/">Pygame documentation</a>
 
 <br><br>
 Table of content:

@@ -7,6 +7,7 @@ from enemies import *
 class DetectCollision:
 
     def __init__(self, player: Character, borders: tuple, images: dict, surface: pygame.Surface, background):
+        self.buffs = pygame.sprite.Group()
         self.difficulty = 3
         self.background = background
         self.surface = surface
@@ -34,6 +35,7 @@ class DetectCollision:
         # pygame.time.delay(200)
 
     def update(self):
+        self.buffs.update()
         self.set_of_enemies.update(group=self.set_of_enemies, obstacles=self.set_of_obstacles)
 
         enemy_bullets_group = pygame.sprite.Group() #group of enemy bullets
@@ -52,6 +54,8 @@ class DetectCollision:
 
         self.bad_touch() #taking damage by colliding with enemy
         self.set_of_obstacles.update()
+        if self.player.health == 0:
+            self.restart()
 
         # for enemy in self.set_of_enemies:
         #     if pygame.sprite.spritecollideany(self.player, enemy.attacks):
@@ -60,6 +64,7 @@ class DetectCollision:
         #         self.restart()
 
     def draw(self, screen):
+        self.buffs.draw(screen)
         self.set_of_enemies.draw(screen)
         self.set_of_obstacles.draw(screen)
 
@@ -76,6 +81,8 @@ class DetectCollision:
             self.set_of_enemies.remove(collided_enemy)  # remove collided enemy
 
     def restart(self):
+        self.player.health = 100
+        self.buffs.empty()
         self.set_of_enemies.empty()
         self.set_of_obstacles.empty()
         self.new_level()

@@ -167,7 +167,7 @@ def main_menu():
     while True:
         screen.blit(background, (0, 0))  #draw menu background
         for button in buttons:
-            button.show() #draw all of the buttons
+            button.show()  #draw all of the buttons
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -176,17 +176,21 @@ def main_menu():
             for button in buttons:
                 if button.click(event):
                     if button.text == "Start":
-                        import main #start the game by import main module
-                        main.main()
+                        try:
+                            import main  # start the game by import main module
+                            main.main()
+                        except AttributeError:
+                            print('Goodbye')
                     elif button.text == "About":
-                        show_about() #start about section
+                        show_about()  # start about section
                     elif button.text == "Instructions":
-                        show_instructions() #start instructions
+                        show_instructions()  # start instructions
                     elif button.text == "Quit":
                         pygame.quit()
-                        sys.exit() #pls dont click it
+                        sys.exit()  # pls dont click it
 
         pygame.display.update()
+
 
 if __name__ == "__main__":
     main_menu()

@@ -26,17 +26,17 @@ class Character(pygame.sprite.Sprite):
 
         # blocking out of border movement
         # bottom
-        if self.rect.bottom > self.borders[1]:
-            self.rect.bottom = self.borders[1]
+        if self.rect.bottom > self.borders[1] - 50:
+            self.rect.bottom = self.borders[1] - 50
         # top
-        if self.rect.top < 0:
-            self.rect.top = 0
+        if self.rect.top < 50:
+            self.rect.top = 50
         # left
-        if self.rect.centerx < 50:
-            self.rect.centerx = 50
+        if self.rect.centerx < 100:
+            self.rect.centerx = 100
         # right
-        if self.rect.centerx > self.borders[0] - 50:
-            self.rect.centerx = self.borders[0] - 50
+        if self.rect.centerx > self.borders[0] - 85:
+            self.rect.centerx = self.borders[0] - 85
 
     def tired(self):
         return False

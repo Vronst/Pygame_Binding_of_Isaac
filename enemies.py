@@ -95,9 +95,9 @@ class RangeEnemy(Enemy):
         now = pygame.time.get_ticks()
         if now - self._last_cooldown > self.cooldown:
             path = os.path.join(os.getcwd(), 'images')
-            if self.rect.x < self.player.x: #player on the right side
+            if self.rect.x < self.player.x:  # player on the right side
                 bullet_image = pygame.image.load(os.path.join(path, 'bullet_right.png')).convert_alpha()
-            else: #player on the left side
+            else:  # player on the left side
                 bullet_image = pygame.image.load(os.path.join(path, 'bullet_left.png')).convert_alpha()
 
             bullet = EnemyBullet(self.rect.x, self.rect.y, bullet_image, self.borders, direction, 3)
