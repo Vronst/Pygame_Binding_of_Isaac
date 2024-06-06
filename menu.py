@@ -176,11 +176,11 @@ def main_menu():
             for button in buttons:
                 if button.click(event):
                     if button.text == "Start":
-                        try:
-                            import main  # start the game by import main module
-                            main.main()
-                        except AttributeError:
-                            print('Goodbye')
+                        # try:
+                        import main  # start the game by import main module
+                        main.main()
+                        # except AttributeError:
+                            # print('Goodbye')
                     elif button.text == "About":
                         show_about()  # start about section
                     elif button.text == "Instructions":

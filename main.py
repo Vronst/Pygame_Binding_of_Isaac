@@ -2,8 +2,7 @@ import os
 import pygame
 from player import Player
 from item import Heart
-from level import DetectCollision
-
+from rooms import Room
 # pygame setup
 DISPLAY = (1200, 800)
 pygame.init()
@@ -46,15 +45,16 @@ heart_image = pygame.image.load(os.path.join(path, 'heart.png'))  # heart image
 player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, player_images, DISPLAY)
 # enemy = MeleeEnemy(100, 100, IMAGES['PLAYER'], DISPLAY, player)
 # enemy1 = RangeEnemy(100, 300, IMAGES['PLAYER'], DISPLAY, player, -3, 5)
-level = DetectCollision(player, DISPLAY, IMAGES, screen, BACKGROUND)
+room = Room(player, DISPLAY, IMAGES, screen, BACKGROUND, image=IMAGES['PLAYER'])
+level = room.level
 
 last_health_update = pygame.time.get_ticks()  # time from start of the game
 last_item_spawn = pygame.time.get_ticks()  # time from start of the game
 item_spawn_interval = 1000
 
 
-collision_detector = DetectCollision(player, DISPLAY, IMAGES, screen, None)
-# collision detector between player and enemies
+# collision_detector = DetectCollision(player, DISPLAY, IMAGES, screen, None)
+# # collision detector between player and enemies
 
 
 # main loop

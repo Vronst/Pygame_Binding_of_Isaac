@@ -6,12 +6,15 @@ from enemies import *
 
 class DetectCollision:
 
-    def __init__(self, player: Character, borders: tuple, images: dict, surface: pygame.Surface, background):
+    def __init__(self,
+                 player: Character, borders: tuple, images: dict, surface: pygame.Surface, background, doors=None):
+        self.doors = doors
         self.buffs = pygame.sprite.Group()
         self.difficulty = 3
         self.background = background
         self.surface = surface
-        self.enemies = {0: (MeleeEnemy, images['MELEE_ENEMY']), 1: (RangeEnemy, images['RANGE_ENEMY'])}  # to be more complicated
+        self.enemies = {0: (MeleeEnemy, images['MELEE_ENEMY']), 1: (RangeEnemy, images['RANGE_ENEMY'])}
+        # to be more complicated
         self.player = player
         self.set_of_enemies = pygame.sprite.Group()
         self.set_of_obstacles = pygame.sprite.Group()
@@ -64,6 +67,8 @@ class DetectCollision:
         #         self.restart()
 
     def draw(self, screen):
+        if self.doors:
+            self.doors.draw(screen)
         self.buffs.draw(screen)
         self.set_of_enemies.draw(screen)
         self.set_of_obstacles.draw(screen)
