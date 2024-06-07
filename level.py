@@ -1,6 +1,4 @@
-import pygame
 from random import randint
-from character import Character
 from enemies import *
 
 
@@ -52,19 +50,13 @@ class DetectCollision:
         enemy_bullets_group.draw(self.surface) #drawing enemy bullets
 
         collided_bullets = pygame.sprite.spritecollide(self.player, enemy_bullets_group, True) #check collision between player and enemy bullet
-        for bullet in collided_bullets:
+        for _ in collided_bullets:
             self.player.take_damage(3)  #deal 3 damage to player
 
         self.bad_touch() #taking damage by colliding with enemy
         self.set_of_obstacles.update()
         if self.player.health == 0:
             self.restart()
-
-        # for enemy in self.set_of_enemies:
-        #     if pygame.sprite.spritecollideany(self.player, enemy.attacks):
-        #         self.restart()
-        #     if self.player.rect.colliderect(enemy) and enemy.is_melee():
-        #         self.restart()
 
     def draw(self, screen):
         if self.doors:

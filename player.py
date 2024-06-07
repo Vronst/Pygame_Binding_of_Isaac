@@ -6,6 +6,7 @@ class Player(Character):
 
     def __init__(self, cx, cy, images, border: tuple):
         super().__init__(cx, cy, images[0], border)
+        self.cords = [0, 0]
         self.images = images  # hero animation images list
         self.image_index = 0  # current animation index image
         self.animation_delay = 13  # set animation delay

@@ -2,7 +2,7 @@ import os
 import pygame
 from player import Player
 from item import Heart
-from rooms import Room
+from rooms import Overlay
 # pygame setup
 DISPLAY = (1200, 800)
 pygame.init()
@@ -45,7 +45,8 @@ heart_image = pygame.image.load(os.path.join(path, 'heart.png'))  # heart image
 player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, player_images, DISPLAY)
 # enemy = MeleeEnemy(100, 100, IMAGES['PLAYER'], DISPLAY, player)
 # enemy1 = RangeEnemy(100, 300, IMAGES['PLAYER'], DISPLAY, player, -3, 5)
-room = Room(player, DISPLAY, IMAGES, screen, BACKGROUND, image=IMAGES['PLAYER'])
+overlay = Overlay(player, DISPLAY, IMAGES, screen, BACKGROUND, image=IMAGES['PLAYER'])
+room = overlay.rooms[0]
 level = room.level
 
 last_health_update = pygame.time.get_ticks()  # time from start of the game
@@ -90,7 +91,9 @@ while running:
     player.draw(screen)
     # hearts.draw(screen)
     pygame.display.update()
-
+    temp = overlay.current_room.check_the_door()
+    if temp:
+        level = overlay.current_room.is_in_door(temp).level
     # lets make it 60fps
     clock.tick(60)
 pygame.quit()
