@@ -45,7 +45,8 @@ heart_image = pygame.image.load(os.path.join(path, 'heart.png'))  # heart image
 player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, player_images, DISPLAY)
 # enemy = MeleeEnemy(100, 100, IMAGES['PLAYER'], DISPLAY, player)
 # enemy1 = RangeEnemy(100, 300, IMAGES['PLAYER'], DISPLAY, player, -3, 5)
-overlay = Overlay(player, DISPLAY, IMAGES, screen, BACKGROUND, image=IMAGES['PLAYER'])
+overlay = Overlay(player=player, borders=DISPLAY, images=IMAGES,
+                  surface=screen, background=BACKGROUND, image=IMAGES['PLAYER'])
 room = overlay.rooms[0]
 level = room.level
 

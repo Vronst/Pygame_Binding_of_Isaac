@@ -12,17 +12,29 @@ class Room:
 
     def __init__(self, player, borders: tuple, images: dict, surface: pygame.Surface,
                  background, direction=None, door_image=None, room=None, overlay=None):
+        # overlay = list of rooms
         self.overlay = overlay
+        #
         self.room = room
+        # background
         self.background = background
+        # display you can draw on
         self.surface = surface
+        # list of images for level
         self.images = images
+        # display borders
         self.borders = borders
+        # player
         self.player = player
+        # image for doors
         self.door_image = door_image if door_image else room.door_image
+        # hit box
         self.rect = self.door_image.get_rect()
+        # group for doors
         self.doors = pygame.sprite.Group()  # should be a group
+        # ?
         self.direction = {'top': 'bottom', 'bottom': 'top', 'left': 'right', 'right': 'left', None: None}[direction]
+        # level with enemies and buffs and doors
         self.level = DetectCollision(self.player, self.borders, self.images,
                                      self.surface, self.background, doors=self.doors)
         self.init_door()
@@ -52,9 +64,6 @@ class Room:
                         self.borders, self.player, room=self.room, overlay=self.overlay)
             self.doors.add(door)
 
-    # def join(self, direction: str):
-    #     pass
-
     def draw(self):
         self.surface.blit(self.door_image, self.rect)
 
@@ -81,11 +90,17 @@ class Door(pygame.sprite.Sprite):
                       'right': (player.cords[0] + 1, player.cords[1])}[self.where]
 
     def go_thru(self):
-        for room in self.overlay.rooms:
-            if room.room_cords == self.cords:
-                self.parent.player.cords = self.cords
-                return room
         self.parent.player.cords = self.cords
+        print(self.parent.player.cords)
+        if self.room:
+            print('im back')
+            self._set_room(self.room)
+            return self.room
+
+        for room in self.overlay.rooms:
+            if room.room_cords == self.parent.player.cords:
+                self._set_room(room)
+                return room
         room = Room(player=self.parent.player, borders=self.parent.borders,
                     images=self.parent.images, surface=self.parent.surface, background=self.parent.background,
                     direction=self.where,
@@ -93,8 +108,12 @@ class Door(pygame.sprite.Sprite):
         # (self, player, borders: tuple, images: dict, surface: pygame.Surface,
         #                  background, direction=None, image=None, room=None, overlay=None):
         self.overlay.rooms.append(room)
-        self.overlay.current_room = room
+        self._set_room(room)
         return room
+
+    def _set_room(self, room):
+        self.overlay.current_room = room
+        self.parent.player.rect.center = (300, 300)  # TODO: need to be coord next to proper door
 
     def door_direction(self):
         return self.where
@@ -111,30 +130,3 @@ class Overlay:
         self.rooms.append(Room(player, borders, images, surface,
                                background, direction, image, room, overlay=self))
         self.current_room = self.rooms[0]
-
-# class Map:
-#
-#     def __init__(self, difficulty: int, player, borders: tuple, images: dict, surface: pygame.Surface,
-#                  background) -> None:
-#         self.background = background
-#         self.surface = surface
-#         self.images = images
-#         self.borders = borders
-#         self.player = player
-#         self.difficulty = difficulty
-#         self.rooms = []
-#         self.current_level = None
-#
-#     def new_map(self, direction=None):
-#         self.rooms.append(Room(self,
-#                                DetectCollision(self.player,
-#                                                self.borders,
-#                                                self.images,
-#                                                self.surface,
-#                                                self.background,
-#                                                ),
-#                                direction=direction))
-#         self.current_level = self.rooms[-1]
-#
-#     def add_room(self, room):
-#         self.rooms.append(room)
