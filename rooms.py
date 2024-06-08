@@ -38,7 +38,7 @@ class Room:
         self.level = DetectCollision(self.player, self.borders, self.images,
                                      self.surface, self.background, doors=self.doors)
         self.init_door()
-        self.room_cords = self.player.cords
+        self.room_cords = tuple(self.player.cords)
 
     def check_the_door(self):
         for door in self.doors:
@@ -79,7 +79,7 @@ class Door(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect()
         # dict for quick position reading
-        self.position = {'top': (borders[0] // 2, 10), 'bottom': (borders[0] // 2, borders[1] - 10),
+        self.position = {'top': (borders[0] // 2, 60), 'bottom': (borders[0] // 2, borders[1] - 60),
                          'left': (50, borders[1] // 2), 'right': (borders[0] - 50, borders[1] // 2)}
         self.rect = self.image.get_rect()
         # setting position
@@ -93,7 +93,6 @@ class Door(pygame.sprite.Sprite):
         self.parent.player.cords = self.cords
         print(self.parent.player.cords)
         if self.room:
-            print('im back')
             self._set_room(self.room)
             return self.room
 
@@ -105,8 +104,7 @@ class Door(pygame.sprite.Sprite):
                     images=self.parent.images, surface=self.parent.surface, background=self.parent.background,
                     direction=self.where,
                     door_image=self.image, room=self.parent, overlay=self.overlay)
-        # (self, player, borders: tuple, images: dict, surface: pygame.Surface,
-        #                  background, direction=None, image=None, room=None, overlay=None):
+
         self.overlay.rooms.append(room)
         self._set_room(room)
         return room
