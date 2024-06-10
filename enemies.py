@@ -16,8 +16,8 @@ class Enemy(Character):
         self.cooldown = 2000  # cooldown time - now 2 seconds
         self._last_cooldown = pygame.time.get_ticks()
 
-    def set_moves(self, x, y):
-        self._moves = ((x, 0), (-x, 0), (0, y), (0, -y))  # how much object will move per update
+    # def set_moves(self, x, y):
+    #     self._moves = ((x, 0), (-x, 0), (0, y), (0, -y))  # how much object will move per update
 
     def _move(self, group=None):
         # making it move dependent of player object

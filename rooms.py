@@ -1,6 +1,6 @@
 import pygame
 import random
-from level import DetectCollision
+from level import Level
 
 """
 First create Room that uses DetectCollision and creates its own doors.
@@ -35,8 +35,8 @@ class Room:
         # ?
         self.direction = {'top': 'bottom', 'bottom': 'top', 'left': 'right', 'right': 'left', None: None}[direction]
         # level with enemies and buffs and doors
-        self.level = DetectCollision(self.player, self.borders, self.images,
-                                     self.surface, self.background, doors=self.doors)
+        self.level = Level(self.player, self.borders, self.images,
+                           self.surface, self.background, doors=self.doors)
         self.init_door()
         self.room_cords = tuple(self.player.cords)
 
@@ -113,8 +113,8 @@ class Door(pygame.sprite.Sprite):
         self.overlay.current_room = room
         self.parent.player.rect.center = (300, 300)  # TODO: need to be coord next to proper door
 
-    def door_direction(self):
-        return self.where
+    # def door_direction(self):
+    #     return self.where
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)

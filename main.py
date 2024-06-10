@@ -47,7 +47,7 @@ player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, player_images, DISPLAY)
 # enemy1 = RangeEnemy(100, 300, IMAGES['PLAYER'], DISPLAY, player, -3, 5)
 overlay = Overlay(player=player, borders=DISPLAY, images=IMAGES,
                   surface=screen, background=BACKGROUND, image=IMAGES['PLAYER'])
-room = overlay.rooms[0]
+room = overlay.current_room
 level = room.level
 
 last_health_update = pygame.time.get_ticks()  # time from start of the game
