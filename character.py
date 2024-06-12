@@ -3,8 +3,9 @@ import pygame
 
 class Character(pygame.sprite.Sprite):
 
-    def __init__(self, cx, cy, image, borders: tuple = (1200, 800)):
+    def __init__(self, cx, cy, image, borders: tuple = (1200, 800), obstacles=None):
         super().__init__()
+        self.obstacles = obstacles
         self.image = image
         # rect represents out character, and save its position
         self.rect = self.image.get_rect()
@@ -20,11 +21,12 @@ class Character(pygame.sprite.Sprite):
     def draw(self, display):
         display.blit(self.image, self.rect)
 
-    def update(self, key_pressed=None, group=None, obstacles=None):
+    def update(self, key_pressed=None, group=None):
         self.get_event(key_pressed=key_pressed)
         self._move(group)
 
         # blocking out of border movement
+
         # bottom
         if self.rect.bottom > self.borders[1] - 50:
             self.rect.bottom = self.borders[1] - 50

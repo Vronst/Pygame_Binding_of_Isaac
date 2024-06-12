@@ -5,8 +5,8 @@ from item import EnemyBullet
 
 
 class Enemy(Character):
-    def __init__(self, cx, cy, image, borders, player, move_x, move_y):
-        super().__init__(cx, cy, image, borders)
+    def __init__(self, cx, cy, image, borders, player, move_x, move_y, obstacles=None):
+        super().__init__(cx, cy, image, borders, obstacles)
         self.player = player.rect
         self.move_x = move_x
         self.move_y = move_y
@@ -53,13 +53,15 @@ class Enemy(Character):
         if distance_y > 0:
             # self.rect.move_ip(self._moves[3])
             moves.append(self._moves[3])
-
         for move in moves:
             if not self.tired():
                 self.rect.move_ip(move)
+                if self.obstacles and pygame.sprite.spritecollideany(self, self.obstacles):
+                    self.rect.move_ip(-move[0], -move[1])
             for member in group:
                 if self.rect.colliderect(member):
                     self.rect.move_ip(-move[0], -move[1])
+
 
     def attack(self, direction: str = 'down'):
         pass
@@ -70,8 +72,8 @@ class Enemy(Character):
 
 class MeleeEnemy(Enemy):
 
-    def __init__(self, cx, cy, image, borders, player, move_x=4, move_y=4):
-        super().__init__(cx, cy, image, borders, player, move_x, move_y)
+    def __init__(self, cx, cy, image, borders, player, move_x=4, move_y=4, obstacles=None):
+        super().__init__(cx, cy, image, borders, player, move_x, move_y, obstacles)
         self.cooldown = 4000
         self._rest = 0
 
@@ -87,8 +89,8 @@ class MeleeEnemy(Enemy):
 
 
 class RangeEnemy(Enemy):
-    def __init__(self, cx, cy, image, borders, player, move_x=-3, move_y=5):
-        super().__init__(cx, cy, image, borders, player, move_x, move_y)
+    def __init__(self, cx, cy, image, borders, player, move_x=-3, move_y=5, obstacles=None):
+        super().__init__(cx, cy, image, borders, player, move_x, move_y, obstacles)
         self._melee = False
 
     def attack(self, direction: str = 'down'):

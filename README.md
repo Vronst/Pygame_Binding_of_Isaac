@@ -22,6 +22,7 @@ This is an overview of our project. For more details, see the following sections
 - doors and rooms
 - enemies (ranged attack, no graphic)
 - readme
+- obstacles layout and generation
 
 <br>Mateusz:
 - audio and graphic research
@@ -58,6 +59,7 @@ Table of content:
 - <a href=#ins>show_instructions()</a>
 - <a href=#about>show_about()</a>
 - <a href=#menu>main_menu()</a>
+- <a href=#obstacles>Obstacles()</a>
 
 ---
 <br><br>
@@ -75,7 +77,7 @@ Table of content:
 <br><br>
 ---
 <span id=room>`class Room(player, borders: tuple, images: dict, surface: pygame.Surface,
-                 background, direction=None, door_image=None, room=None, overlay=None)`</span> - this class creates <a href=#door>`doors`</a> and <a href=#detectcollision>`level`</a>. It also has its own coordinates which it creates from player cords. These cords are used to load it in proper location, and allowing player to get back to old rooms. <b>THIS OBJECT SHOULD NOT BE CREATED ON ITS OWN. USE <a href=#overlay>OVERLAY</a> INSTEAD.
+                 background, direction=None, door_image=None, room=None, overlay=None, first=None)`</span> - this class creates <a href=#door>`doors`</a> and <a href=#detectcollision>`level`</a>. It also has its own coordinates which it creates from player cords. These cords are used to load it in proper location, and allowing player to get back to old rooms. <b>THIS OBJECT SHOULD NOT BE CREATED ON ITS OWN. USE <a href=#overlay>OVERLAY</a> INSTEAD.
 </b>
 
 **Arguments**:
@@ -85,9 +87,10 @@ Table of content:
 - *surface* -> <a href="https://www.pygame.org/docs/ref/surface.html?highlight=surface#pygame.Surface">pygame.Surface</a> to draw enemies and obstacles on.
 - *background* -> path to image that will be used as background.
 - *direction* -> used to create door to previous <a href=#room>room</a>. It should contain information where the door should be placed.
-- *door_image* -> path to image that will be used as doors
-- *room* -> room that links with created doors (see direction argument)
-- *overlay* -> reference to overlay that contains all rooms. It allows navigation and after interacting with <a href=#door>door</a> allocation of proper room
+- *door_image* -> path to image that will be used as doors.
+- *room* -> room that links with created doors (see direction argument).
+- *overlay* -> reference to overlay that contains all rooms. It allows navigation and after interacting with <a href=#door>door</a> allocation of proper room.
+- *first* -> if it is the first room, this argument is provided to the <a href=#detectcollision>level</a>
 
 <br><br>
 **Methods**:
@@ -112,13 +115,14 @@ Table of content:
 - *go_thru()* -> sets <a href=#player>Player</a> coords to the one that designated room has. It checks if the room exists and then use it. Otherwise, it creates new room.
 - *draw(surface)* -> draw itself on surface.
 ---
-<span id=enemy>`class Enemy( cx, cy, image, borders, player, move_x, move_y)`</span> - base for enemies. Inherits after <a href=#character>Character</a>
+<span id=enemy>`class Enemy( cx, cy, image, borders, player, move_x, move_y, obstacles=None)`</span> - base for enemies. Inherits after <a href=#character>Character</a>
 <br><br>
 **Arguments**:
-- *cx, cy, image, borders* -> Same as parent class
-- *player* -> <a href=#player>Player</a> object. It takes its coordinates, and use them to follow him
-- *move_x* -> speed of movement on OX
-- *move_y* -> speed of movement on OY
+- *cx, cy, image, borders* -> Same as parent class.
+- *player* -> <a href=#player>Player</a> object. It takes its coordinates, and use them to follow him.
+- *move_x* -> speed of movement on OX.
+- *move_y* -> speed of movement on OY.
+- *obstacles* -> list of obstacles that limits enemy movement
 
 <br><br>
 **Methods**:
@@ -149,13 +153,14 @@ Table of content:
 - *attack()* -> creates <a href=#bullet>Bullet</a> object.
 ---
 
-<span id=character>`class Character(cx, cy, image, borders)`</span> - it is the base for any character either player or enemy. Inherits after [pygame.sprite.Sprite](https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite)
+<span id=character>`class Character(cx, cy, image, borders, obstacles=None)`</span> - it is the base for any character either player or enemy. Inherits after [pygame.sprite.Sprite](https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite)
 <br><br>
 **Arguments**:
 - *cx* -> x-coordinate
 - *cy* -> y-coordinate
 - *image* -> image which this object will represent
 - *borders* -> coordinates which this object cannot cross *(default (1200, 800))*
+- *obstacles* -> list of obstacles --no use for this because it is not implemented in this class
 <br><br>
 
 **Methods**:
@@ -163,13 +168,15 @@ Table of content:
 - *draw* -> puts object on screen
 - *update(key_pressed)* -> passes key_pressed to get_event(), ensures that object won't cross borders
 ---
-<span id=player>`class Player(cx, cy, images, border: tuple)`</span> - inherits after <a href=#character>Character</a>
+<span id=player>`class Player(cx, cy, images, border: tuple, obstacles=None, traps=None)`</span> - inherits after <a href=#character>Character</a>
 <br><br>
 **Arguments**:
 - *cx* -> x-coordinate.
 - *cy* -> y-coordinate.
 - *image* -> image which this object will represent.
 - *borders* -> borders of the window *(default (1200, 800))*.
+- *obstacles* -> list of obstacles.
+- *traps* -> list of traps (obstacles that damage player).
 <br><br>
 
 **Methods**:
@@ -178,8 +185,9 @@ Table of content:
 - *draw_health_bar(display)* -> used by *draw(display)* to draw health bar.
 - *take_damage(amount)* -> reduces health by amount
 - *heal(amount)* -> increases health by amount
+- *check_collision(self, move)* -> checks if player collided with obstacle or trap and either block the move or damages player
 ---
-<span id=detectcollision>`class Level(player: Character, borders: tuple, images: dict, surface: pygame.Surface, background, doors=None)`</span> - this class is used to create and control one single <a href=#room>`room`</a>. It spawns and updates <a href=#enemy>`enemies`</a>. It also controls player movement, so he wont leave screen. <br>
+<span id=detectcollision>`class Level(player: Character, borders: tuple, images: dict, surface: pygame.Surface, background, doors=None, first=None)`</span> - this class is used to create and control one single <a href=#room>`room`</a>. It spawns and updates <a href=#enemy>`enemies`</a>. It also controls player movement, so he wont leave screen. <br>
 <br><br>
 **Arguments**:
 - *player* ->  <a href=#player>Player</a> object.
@@ -188,6 +196,7 @@ Table of content:
 - *surface* -> pygame surface that. Used as a screen to draw objects.
 - *background* -> background image.
 - *doors* -> doors object to be drawn.
+- *first* -> if True, there will be no obstacles and no enemies in the room
 <br><br>
 
 **Methods**:
@@ -214,6 +223,23 @@ Table of content:
 - *change_text()* -> creates rect for button and fills it with designated color. Puts text on button.
 - *show()* -> changes button when hovered.
 - *click()* -> checks if button were clicked.
+---
+
+<span id=obstacles>`class Obstacles(borders: tuple, difficulty: str = 'normal)`</span> - This class generates obstacles and traps (not implemented yet).
+
+<br><br>
+**Arguments**:
+- *borders* -> area for obstacles to be generated
+- *difficulty* -> not implemented, better to stay 'normal'
+
+
+**Methods**:
+- *scale()* -> based on difficulty chooses if generated object is trap or obstacle
+- *version{**number**}()* -> Predefined layout.
+- *craft_obstacle_or_trap()* -> Creates object. It could be a trap if difficulty was different then normal and scale() was used.
+- *draw(screen)* -> draws obstacles and traps on screen.
+- *random_gen(image, difficulty: str = 'normal')* -> run this to generate random layout form predefined layouts (version{number}).
+
 ---
 
 <span id=ins>`def show_instructions()`</span> - show instruction screen.

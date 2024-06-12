@@ -4,8 +4,10 @@ from character import Character
 
 class Player(Character):
 
-    def __init__(self, cx, cy, images, border: tuple):
+    def __init__(self, cx, cy, images, border: tuple, obstacles=None, traps=None):
         super().__init__(cx, cy, images[0], border)
+        self.traps = traps
+        self.obstacles = obstacles
         self.cords = (0, 0)
         self.images = images  # hero animation images list
         self.image_index = 0  # current animation index image
@@ -15,20 +17,27 @@ class Player(Character):
         self.max_health = 100  # maximum player health
         self.border = border  # border for window dimensions
 
+    def check_collision(self, move):
+        self.rect.move_ip(move)
+        if pygame.sprite.spritecollideany(self, self.obstacles):
+            self.rect.move_ip((-move[0], -move[1]))
+        if pygame.sprite.spritecollideany(self, self.traps):
+            self.take_damage(15)
+
     def get_event(self, **kwargs):
         # Player moves by 8 pixels when key pressed
         if kwargs['key_pressed'][pygame.K_LEFT]:
-            self.rect.move_ip([-8, 0])
+            self.check_collision([-8, 0])
         if kwargs['key_pressed'][pygame.K_RIGHT]:
-            self.rect.move_ip([8, 0])
+            self.check_collision([8, 0])
         if kwargs['key_pressed'][pygame.K_UP]:
-            self.rect.move_ip([0, -8])
+            self.check_collision([0, -8])
         if kwargs['key_pressed'][pygame.K_DOWN]:
-            self.rect.move_ip([0, 8])
-    
+            self.check_collision([0, 8])
+
         self.last_delay -= 1  # decreasing delay
         if self.last_delay <= 0:
-            self.image_index += 1 # go to the next animation image
+            self.image_index += 1  # go to the next animation image
             if self.image_index >= len(self.images):  # setting loop
                 self.image_index = 0
             self.image = self.images[self.image_index]  # replace animation image with next index
