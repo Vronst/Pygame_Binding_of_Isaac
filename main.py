@@ -3,6 +3,7 @@ import pygame
 from player import Player
 from item import Heart
 from rooms import Overlay
+
 # pygame setup
 DISPLAY = (1200, 800)
 pygame.init()
@@ -34,29 +35,75 @@ for file_name in file_names:
     # convert_alpha() is for fast blit into desired surface that's why no normal convert()
     IMAGES[image_name] = pygame.image.load(os.path.join(path, file_name)).convert_alpha(BACKGROUND)
 
-player_images = []
-for i in range(1, 6):  # 5 images: hero_idle_01.png to hero_idle_08.png
+player_idle_images = []
+for i in range(1, 6):  # 5 images: hero_idle_01.png to hero_idle_05.png
     image_name = f'hero_idle_{i:02}.png'
-    player_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+    player_idle_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+
+player_up_images = []
+for i in range(1, 8):
+    image_name = f'hero_walk_up_{i:02}.png'
+    player_up_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+
+player_down_images = []
+for i in range(1, 9):
+    image_name = f'hero_walk_down_{i:02}.png'
+    player_down_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+
+player_left_images = []
+for i in range(1, 9):
+    image_name = f'hero_walk_left_{i:02}.png'
+    player_left_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+
+player_right_images = []
+for i in range(1, 9):
+    image_name = f'hero_walk_right_{i:02}.png'
+    player_right_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+
+player_right_attack_images = []
+for i in range(1, 5):
+    image_name = f'hero_attack_right_{i:02}.png'
+    player_right_attack_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+
+player_left_attack_images = []
+for i in range(1, 5):
+    image_name = f'hero_attack_left_{i:02}.png'
+    player_left_attack_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+
+player_down_attack_images = []
+for i in range(1, 5):
+    image_name = f'hero_attack_down_{i:02}.png'
+    player_down_attack_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+
+player_up_attack_images = []
+for i in range(1, 5):
+    image_name = f'hero_attack_up_{i:02}.png'
+    player_up_attack_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
+
+images = {
+    'idle': player_idle_images,
+    'up': player_up_images,
+    'down': player_down_images,
+    'left': player_left_images,
+    'right': player_right_images,
+    'attack_right': player_right_attack_images,
+    'attack_left': player_left_attack_images,
+    'attack_down': player_down_attack_images,
+    'attack_up': player_up_attack_images
+}
 
 heart_image = pygame.image.load(os.path.join(path, 'heart.png'))  # heart image
-# hearts = pygame.sprite.Group()  # group of hearts on the screen
 
-player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, player_images, DISPLAY)
-# enemy = MeleeEnemy(100, 100, IMAGES['PLAYER'], DISPLAY, player)
-# enemy1 = RangeEnemy(100, 300, IMAGES['PLAYER'], DISPLAY, player, -3, 5)
+player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, images=images, border=DISPLAY, weapon=IMAGES["SWORD1"])
+
 overlay = Overlay(player=player, borders=DISPLAY, images=IMAGES,
-                  surface=screen, background=BACKGROUND, image=IMAGES['PLAYER'])
+                  surface=screen, background=BACKGROUND, image=IMAGES['DOORS_2'])
 room = overlay.current_room
 level = room.level
 
 last_health_update = pygame.time.get_ticks()  # time from start of the game
 last_item_spawn = pygame.time.get_ticks()  # time from start of the game
-item_spawn_interval = 1000
-
-
-# collision_detector = DetectCollision(player, DISPLAY, IMAGES, screen, None)
-# # collision detector between player and enemies
+item_spawn_interval = 30000
 
 
 # main loop
@@ -86,15 +133,17 @@ while running:
         heart.heal(player)  # heal from collided heart
 
     level.update()  # moving enemies
-    player.update(pygame.key.get_pressed())
+    key_pressed = pygame.key.get_pressed()
+    player.get_event(key_pressed=key_pressed)
 
     level.draw(screen)
     player.draw(screen)
-    # hearts.draw(screen)
     pygame.display.update()
+    
     temp = overlay.current_room.check_the_door()
     if temp:
         level = overlay.current_room.is_in_door(temp).level
+
     # lets make it 60fps
     clock.tick(60)
 pygame.quit()

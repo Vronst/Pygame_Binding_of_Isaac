@@ -96,6 +96,7 @@ class Door(pygame.sprite.Sprite):
 
     def go_thru(self):
         self.parent.player.cords = self.cords
+        self.parent.player.attacks.empty()
         print(self.parent.player.cords)
         # if it is precious room its return it
         if self.room:

@@ -11,6 +11,7 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (cx, cy)
         self.borders = borders
+        self.limit = [85, 50]
 
     def _move(self, group):
         pass
@@ -28,17 +29,17 @@ class Character(pygame.sprite.Sprite):
         # blocking out of border movement
 
         # bottom
-        if self.rect.bottom > self.borders[1] - 50:
-            self.rect.bottom = self.borders[1] - 50
+        if self.rect.bottom > self.borders[1] - self.limit[1]:
+            self.rect.bottom = self.borders[1] - self.limit[1]
         # top
-        if self.rect.top < 50:
-            self.rect.top = 50
+        if self.rect.top < self.limit[1]:
+            self.rect.top = self.limit[1]
         # left
-        if self.rect.centerx < 100:
-            self.rect.centerx = 100
+        if self.rect.centerx < self.limit[0]:
+            self.rect.centerx = self.limit[0]
         # right
-        if self.rect.centerx > self.borders[0] - 85:
-            self.rect.centerx = self.borders[0] - 85
+        if self.rect.centerx > self.borders[0] - self.limit[0]:
+            self.rect.centerx = self.borders[0] - self.limit[0]
 
     def tired(self):
         return False

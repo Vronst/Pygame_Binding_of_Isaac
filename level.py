@@ -26,7 +26,7 @@ class Level:
 
     def new_level(self, first=None) -> None:
         if not first:
-            self.obstacle_gen.random_gen(self.images['PLAYER'])
+            self.obstacle_gen.random_gen(self.images['CRYSTAL_OBSTACLE'])
             for _ in range(randint(0, self.difficulty)):
                 # shot purpose is to choose melee or range enemy and their image
                 shot = randint(0, len(self.enemies) - 1)

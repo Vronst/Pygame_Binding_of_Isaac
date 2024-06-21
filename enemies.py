@@ -7,7 +7,7 @@ from item import EnemyBullet
 class Enemy(Character):
     def __init__(self, cx, cy, image, borders, player, move_x, move_y, obstacles=None):
         super().__init__(cx, cy, image, borders, obstacles)
-        self.player = player.rect
+        self.player = player
         self.move_x = move_x
         self.move_y = move_y
         self._moves = ((self.move_x, 0), (-self.move_x, 0), (0, self.move_y), (0, -self.move_y))
@@ -20,9 +20,11 @@ class Enemy(Character):
     #     self._moves = ((x, 0), (-x, 0), (0, y), (0, -y))  # how much object will move per update
 
     def _move(self, group=None):
+        if pygame.sprite.spritecollideany(self, self.player.attacks):
+            self.kill()
         # making it move dependent of player object
-        distance_x = self.rect.x - self.player.x
-        distance_y = self.rect.y - self.player.y
+        distance_x = self.rect.x - self.player.rect.x
+        distance_y = self.rect.y - self.player.rect.y
         if distance_x < 0:
             direction = 'right'
         elif distance_x > 0:
@@ -37,22 +39,18 @@ class Enemy(Character):
 
         if group:
             group = [x for x in group if x != self]
-
         moves = []
-
-        if distance_x < 0 or (distance_x >= 0 and self.rect.x > self.borders[0] - 100 and not self._melee):
-            # self.rect.move_ip(self._moves[0])
+        # go right if melee (else left, init of range enemy inverts x)
+        if distance_x < 0:
             moves.append(self._moves[0])
-        if (distance_x > 0 or
-                (distance_x >= 0 and self.rect.x < self.borders[0] - self.borders[0] + 100 and not self._melee)):
-            # self.rect.move_ip(self._moves[1])
+        # go left if melee (else right)
+        if distance_x >= 0:
             moves.append(self._moves[1])
         if distance_y < 0:
-            # self.rect.move_ip(self._moves[2])
             moves.append(self._moves[2])
         if distance_y > 0:
-            # self.rect.move_ip(self._moves[3])
             moves.append(self._moves[3])
+
         for move in moves:
             if not self.tired():
                 self.rect.move_ip(move)
@@ -89,15 +87,16 @@ class MeleeEnemy(Enemy):
 
 
 class RangeEnemy(Enemy):
-    def __init__(self, cx, cy, image, borders, player, move_x=-3, move_y=5, obstacles=None):
-        super().__init__(cx, cy, image, borders, player, move_x, move_y, obstacles)
+    def __init__(self, cx, cy, image, borders, player, move_x=3, move_y=5, obstacles=None):
+        super().__init__(cx, cy, image, borders, player, -move_x, move_y, obstacles)
         self._melee = False
+        self.limit[0] = 100
 
     def attack(self, direction: str = 'down'):
         now = pygame.time.get_ticks()
         if now - self._last_cooldown > self.cooldown:
             path = os.path.join(os.getcwd(), 'images')
-            if self.rect.x < self.player.x:  # player on the right side
+            if self.rect.x < self.player.rect.x:  # player on the right side
                 bullet_image = pygame.image.load(os.path.join(path, 'bullet_right.png')).convert_alpha()
             else:  # player on the left side
                 bullet_image = pygame.image.load(os.path.join(path, 'bullet_left.png')).convert_alpha()
