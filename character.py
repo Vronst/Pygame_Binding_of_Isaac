@@ -11,9 +11,10 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (cx, cy)
         self.borders = borders
-        self.limit = [85, 50]
+        self.limit = [85, 50]  # limit how close to the border it can be
 
     def _move(self, group):
+        # idea of group here is to have group of object that u can collide with
         pass
 
     def get_event(self, **kwargs):
@@ -23,6 +24,7 @@ class Character(pygame.sprite.Sprite):
         display.blit(self.image, self.rect)
 
     def update(self, key_pressed=None, group=None):
+        # forwarding pressed keys
         self.get_event(key_pressed=key_pressed)
         self._move(group)
 

@@ -30,7 +30,7 @@ class Room:
         # player
         self.player = player
         # image for doors
-        self.door_image = door_image if door_image else room.door_image
+        self.door_image = door_image if door_image else room.door_image  # if image not passed it loads it from room images
         # hit box
         self.rect = self.door_image.get_rect()
         # group for doors
@@ -45,9 +45,10 @@ class Room:
 
     # checks if player enters the door
     def check_the_door(self):
-        for door in self.doors:
-            if self.player.rect.colliderect(door):
-                return door
+        if not self.level.set_of_enemies.spritedict:
+            for door in self.doors:
+                if self.player.rect.colliderect(door):
+                    return door
         return False
 
     # allows player to use door if collided
