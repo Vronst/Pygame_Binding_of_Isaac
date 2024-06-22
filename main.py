@@ -40,11 +40,10 @@ for i in range(1, 6):  # 5 images: hero_idle_01.png to hero_idle_08.png
     player_images.append(pygame.image.load(os.path.join(path, image_name)).convert_alpha())
 
 heart_image = pygame.image.load(os.path.join(path, 'heart.png'))  # heart image
-# hearts = pygame.sprite.Group()  # group of hearts on the screen
 
-player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, player_images, DISPLAY)
-# enemy = MeleeEnemy(100, 100, IMAGES['PLAYER'], DISPLAY, player)
-# enemy1 = RangeEnemy(100, 300, IMAGES['PLAYER'], DISPLAY, player, -3, 5)
+
+player = Player(DISPLAY[0] / 2, DISPLAY[1] / 2, player_images, DISPLAY, weapon=IMAGES["PLAYER"])
+
 overlay = Overlay(player=player, borders=DISPLAY, images=IMAGES,
                   surface=screen, background=BACKGROUND, image=IMAGES['PLAYER'])
 room = overlay.current_room
@@ -53,11 +52,6 @@ level = room.level
 last_health_update = pygame.time.get_ticks()  # time from start of the game
 last_item_spawn = pygame.time.get_ticks()  # time from start of the game
 item_spawn_interval = 1000
-
-
-# collision_detector = DetectCollision(player, DISPLAY, IMAGES, screen, None)
-# # collision detector between player and enemies
-
 
 # main loop
 while running:

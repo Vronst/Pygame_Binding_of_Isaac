@@ -23,6 +23,7 @@ This is an overview of our project. For more details, see the following sections
 - enemies (ranged attack, no graphic)
 - readme
 - obstacles layout and generation
+- collisions with obstacles
 
 <br>Mateusz:
 - audio and graphic research
@@ -36,7 +37,10 @@ This is an overview of our project. For more details, see the following sections
 
 - enemies animations
 - level design (obstacles and surfaces)
-- collisions with obstacles
+- score
+- boss (maybe in future)
+- items (maybe in future)
+
 ---
 
 ### Documentation
@@ -54,12 +58,17 @@ Table of content:
 - <a href=#character>Character</a>
 - <a href=#player>Player</a>
 - <a href=#detectcollision>Level</a>
-- <a href=#bullet>Bullet</a>
 - <a href=#button>Button</a>
-- <a href=#ins>show_instructions()</a>
-- <a href=#about>show_about()</a>
-- <a href=#menu>main_menu()</a>
-- <a href=#obstacles>Obstacles()</a>
+- <a href=#ins>show_instructions</a>
+- <a href=#about>show_about</a>
+- <a href=#menu>main_menu</a>
+- <a href=#obstacles>Obstacles</a>
+- <a href=#item>Item</a>
+- <a href=#heart>Heart</a>
+- <a href=#bullet>EnemyBullet</a>
+- <a href=#sword>PlayerSword</a>
+
+
 
 ---
 <br><br>
@@ -112,7 +121,7 @@ Table of content:
 
 <br><br>
 **Methods**:
-- *go_thru()* -> sets <a href=#player>Player</a> coords to the one that designated room has. It checks if the room exists and then use it. Otherwise, it creates new room.
+- *go_thru()* -> sets <a href=#player>Player</a> coords to the one that designated room has. It checks if the room exists and then use it. Otherwise, it creates new room. It also kills all player attacks.
 - *draw(surface)* -> draw itself on surface.
 ---
 <span id=enemy>`class Enemy( cx, cy, image, borders, player, move_x, move_y, obstacles=None)`</span> - base for enemies. Inherits after <a href=#character>Character</a>
@@ -126,21 +135,24 @@ Table of content:
 
 <br><br>
 **Methods**:
+- *attack* -> not implemented.
+- *is_melee* -> returns self._melee.
 - *tired()* -> simple methods that returns True or False, used to stop this enemy from moving
 ---
-<span id=meleeenemy>`class MeleeEnemy(cx, cy, image, borders, player, move_x=4, move_y=4)`</span> - inherits after <a href=#enemy>Enemy</a>
+<span id=meleeenemy>`class MeleeEnemy(cx, cy, image, borders, player, move_x=4, move_y=4, obstacles=None)`</span> - inherits after <a href=#enemy>Enemy</a>
 <br><br>
 **Arguments**:
 - Same as parent class
-- *player* -> <a href=#player>Player</a> object. It takes its coordinates, and use them to follow him
-- *move_x* -> look parent class
-- *move_y* -> look parent class
+- *player* -> <a href=#player>Player</a> object. It takes its coordinates, and use them to follow him.
+- *move_x* -> look parent class.
+- *move_y* -> look parent class.
+- *obstacles* -> group of sprite that this object cannot move through.
 
 <br><br>
 **Methods**:
 - *tired()* -> simple methods that returns True or False, used to stop this enemy from moving
 ---
-<span id=rangeenemy>`class RangeEnemy(cx, cy, image, borders, player)`</span> - inherits after <a href=#enemy>Enemy</a>
+<span id=rangeenemy>`class RangeEnemy(cx, cy, image, borders, player, move_x=3, move_y=5, obstacles=None)`</span> - inherits after <a href=#enemy>Enemy</a>
 <br><br>
 **Arguments**:
 - Same as parent class
@@ -167,8 +179,9 @@ Table of content:
 - *get_event(\*\*kwargs)* -> to implement in inheriting classes 
 - *draw* -> puts object on screen
 - *update(key_pressed)* -> passes key_pressed to get_event(), ensures that object won't cross borders
+- *tired()* -> returns false. (Important in enemy design)
 ---
-<span id=player>`class Player(cx, cy, images, border: tuple, obstacles=None, traps=None)`</span> - inherits after <a href=#character>Character</a>
+<span id=player>`class Player(cx, cy, images, border: tuple, obstacles=None, traps=None, weapon=None)`</span> - inherits after <a href=#character>Character</a>
 <br><br>
 **Arguments**:
 - *cx* -> x-coordinate.
@@ -177,6 +190,7 @@ Table of content:
 - *borders* -> borders of the window *(default (1200, 800))*.
 - *obstacles* -> list of obstacles.
 - *traps* -> list of traps (obstacles that damage player).
+- *weapon* -> image for weapon.
 <br><br>
 
 **Methods**:
@@ -186,6 +200,7 @@ Table of content:
 - *take_damage(amount)* -> reduces health by amount
 - *heal(amount)* -> increases health by amount
 - *check_collision(self, move)* -> checks if player collided with obstacle or trap and either block the move or damages player
+- *attack* -> creates object of <a href=#sword>PlayerWeapon</a> and adds it to self.attacks (pygame group).
 ---
 <span id=detectcollision>`class Level(player: Character, borders: tuple, images: dict, surface: pygame.Surface, background, doors=None, first=None)`</span> - this class is used to create and control one single <a href=#room>`room`</a>. It spawns and updates <a href=#enemy>`enemies`</a>. It also controls player movement, so he wont leave screen. <br>
 <br><br>
@@ -239,6 +254,35 @@ Table of content:
 - *craft_obstacle_or_trap()* -> Creates object. It could be a trap if difficulty was different then normal and scale() was used.
 - *draw(screen)* -> draws obstacles and traps on screen.
 - *random_gen(image, difficulty: str = 'normal')* -> run this to generate random layout form predefined layouts (version{number}).
+---
+
+<span id=item>`class Item(cx, cy, image, borders)`</span> - this class is blueprint for vast items.
+
+<br><br>
+**Arguments**:
+- *cx* -> x coordinate.
+- *cy* -> y coordinate.
+- *imgage* -> image of item.
+- *borders* -> game window size.
+
+
+
+**Methods**:
+- *update(key_pressed=None, group=None, obstacles=None, borders: tuple = (1200, 800))* -> uses self._move()
+---
+
+<span id=heart>`class Heart(image, borders)`</span> - item that heals player.
+
+<br><br>
+**Arguments**:
+- *imgage* -> image of item.
+- *borders* -> game window size in which it can spawn.
+
+
+
+**Methods**:
+- *spawn()* -> spawns in random position.
+- *heal(player)* -> uses player.heal(5).
 
 ---
 
@@ -253,3 +297,31 @@ Table of content:
 <span id=menu>`def main_menu()`</span> - renders buttons (start, about, instructions and quit). Draws menu screen.
 
 ---
+
+<span id=bullet>`class EnemyBullet(cx, cy, image, borders: tuple, direction: str, speed=3)`</span> - bullet for enemies to use.
+
+<br><br>
+**Arguments**:
+- *cx* -> x coordinate.
+- *cy* -> y coordinate.
+- *imgage* -> image of item.
+- *borders* -> game window size.
+- *direction* -> direction that bullet follows.
+- *speed* -> speed of traveling.
+---
+
+<span id=sword>`class PlayerSword(cx, cy, image, borders, direction: str, speed=3, range=100, owner=None)`</span> - Only object that allows player to attack.
+
+<br><br>
+**Arguments**:
+- *cx* -> x coordinate.
+- *cy* -> y coordinate.
+- *imgage* -> image of item.
+- *borders* -> game window size.
+- *direction* -> direction of attack.
+- *speed* -> speed of attack.
+- *range* -> range of attack.
+
+
+**Methods**:
+- *update(surface)* -> uses self._move() and self.draw().

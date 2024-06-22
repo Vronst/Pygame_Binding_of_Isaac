@@ -15,10 +15,8 @@ class Level:
         self.background = background
         self.surface = surface
         self.enemies = {0: (MeleeEnemy, self.images['MELEE_ENEMY']), 1: (RangeEnemy, self.images['RANGE_ENEMY'])}
-        # to be more complicated
         self.player = player
         self.set_of_enemies = pygame.sprite.Group()
-        # self.set_of_obstacles = pygame.sprite.Group()
         self.borders = borders
         self.last_damage_time = 0
         # for safety run new_level last in init
@@ -36,7 +34,7 @@ class Level:
                         self.enemies[shot][1],
                         self.borders,
                         self.player, obstacles=self.obstacle_gen.obstacles))
-                self.set_of_enemies.add(new)  # ignore yellow warning
+                self.set_of_enemies.add(new)
 
         self.draw(self.surface)
 
@@ -44,7 +42,7 @@ class Level:
         self.player.obstacles = self.obstacle_gen.obstacles
         self.player.traps = self.obstacle_gen.traps
         self.buffs.update()
-        self.set_of_enemies.update(group=self.set_of_enemies)
+        self.set_of_enemies.update(group=self.set_of_enemies)  # need to past it so it know where is everybody and who collided with who
 
         enemy_bullets_group = pygame.sprite.Group()  # group of enemy bullets
 
@@ -66,7 +64,7 @@ class Level:
             self.restart()
 
     def draw(self, screen) -> None:
-        if self.doors:
+        if self.doors and not self.set_of_enemies.spritedict:
             self.doors.draw(screen)
         self.buffs.draw(screen)
         self.obstacle_gen.draw(self.surface)

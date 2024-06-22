@@ -1,10 +1,11 @@
 import pygame
 from character import Character
+from item import PlayerSword
 
 
 class Player(Character):
 
-    def __init__(self, cx, cy, images, border: tuple, obstacles=None, traps=None):
+    def __init__(self, cx, cy, images, border: tuple, obstacles=None, traps=None, weapon=None):
         super().__init__(cx, cy, images[0], border)
         self.traps = traps
         self.obstacles = obstacles
@@ -16,6 +17,10 @@ class Player(Character):
         self.health = 100  # starting player health
         self.max_health = 100  # maximum player health
         self.border = border  # border for window dimensions
+        self.weapon = weapon  # image of weapon
+        self.attacks = pygame.sprite.Group()
+        self._lastcooldown = 0
+        self.cooldown = 3000
 
     def check_collision(self, move):
         self.rect.move_ip(move)
@@ -34,7 +39,14 @@ class Player(Character):
             self.check_collision([0, -8])
         if kwargs['key_pressed'][pygame.K_DOWN]:
             self.check_collision([0, 8])
-
+        if kwargs['key_pressed'][pygame.K_w]:
+            self.attack('up')
+        if kwargs['key_pressed'][pygame.K_s]:
+            self.attack('down')
+        if kwargs['key_pressed'][pygame.K_a]:
+            self.attack('left')
+        if kwargs['key_pressed'][pygame.K_d]:
+            self.attack('right')
         self.last_delay -= 1  # decreasing delay
         if self.last_delay <= 0:
             self.image_index += 1  # go to the next animation image
@@ -43,12 +55,18 @@ class Player(Character):
             self.image = self.images[self.image_index]  # replace animation image with next index
             self.last_delay = self.animation_delay  # reset delay
 
-    def attack(self):
-        pass
+    def attack(self, direction=None):
+        position = {'up': (self.rect.center[0], self.rect.top), 'down': (self.rect.center[0], self.rect.bottom,),
+                        'left': (self.rect.left, self.rect.center[1]), 'right': (self.rect.right, self.rect.center[1])}[direction]
+        if not self.attacks.sprites():
+            attack = PlayerSword(cx=position[0], cy=position[1], image=self.weapon, borders=self.borders, direction=direction, owner=self)
+            self.attacks.add(attack)
+
 
     def draw(self, display):
         super().draw(display)
         self.draw_health_bar(display)
+        self.attacks.update(display)
 
     def draw_health_bar(self, display):
         health_bar_width = self.border[0] // 2  # half the window width
