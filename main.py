@@ -134,9 +134,9 @@ while running:
 
     level.update()  # moving enemies
     key_pressed = pygame.key.get_pressed()
-    player.get_event(key_pressed=key_pressed)
+    player.update(key_pressed=key_pressed)
 
-    level.draw(screen)
+    # level.draw(screen)
     player.draw(screen)
     pygame.display.update()
     

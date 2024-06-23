@@ -6,8 +6,9 @@ from time import time
 
 
 class Enemy(Character):
-    def __init__(self, cx, cy, image, borders, player, move_x, move_y, obstacles=None, health=3):
-        super().__init__(cx, cy, image, borders, obstacles)
+    def __init__(self, cx, cy, images: dict, borders, player, move_x, move_y, obstacles=None, health=3):
+        super().__init__(cx, cy, images['MELEE_ENEMY'], borders, obstacles)
+        self.images = images
         self.player = player
         self.move_x = move_x
         self.move_y = move_y
@@ -17,10 +18,9 @@ class Enemy(Character):
         self.cooldown = 2000  # cooldown time - now 2 seconds
         self._last_cooldown = pygame.time.get_ticks()
         self.health = health
-        self.immunity_time = 1
-        self.damaged_time = time()
-        self.time = time()
-
+        self.image_index = 1
+        self.animations = ('ATTACK', 'WALK')
+        
     # not used thus commented
     # def set_moves(self, x, y):
     #     self._moves = ((x, 0), (-x, 0), (0, y), (0, -y))  # how much object will move per update
@@ -28,8 +28,8 @@ class Enemy(Character):
     def _move(self, group=None):
         self.time = time()
         # colliding with players attacks
-        if pygame.sprite.spritecollideany(self, self.player.attacks) and self.time - self.damaged_time > self.immunity_time:
-            print(self.health, time())
+        if pygame.sprite.spritecollideany(self, self.player.attacks) and not self.immune():
+            print(self.health)
             self.damaged_time = time()
             self.health -= 1
             if self.health == 0:
@@ -46,9 +46,21 @@ class Enemy(Character):
             direction = 'up'
         else:
             direction = 'down'
-        temp = self.attack(direction)
+        if not self.moving:
+            temp = self.attack(direction)
+        else:
+            temp = None
         if temp:
             self.attacks.add(temp)
+        
+        self.last_delay -= 1  # decreasing delay
+        if self.last_delay <= 0:
+            self.image_index += 1  # go to the next animation image
+            if self.image_index > 6:  # setting loop
+                self.image_index = 1
+            index = 1 if self.moving else 0  
+            self.image = pygame.transform.scale(self.images[self.animations[index] + str(self.image_index)], (67, 83))
+            self.last_delay = self.animation_delay  # reset delay
 
         if group:
             group = [x for x in group if x != self]
@@ -70,11 +82,19 @@ class Enemy(Character):
             if not self.tired():
                 self.rect.move_ip(move)
                 if self.obstacles and pygame.sprite.spritecollideany(self, self.obstacles):
+                    self.moving = False
                     self.rect.move_ip(-move[0], -move[1])
+                else:
+                    self.moving = True
+            else:
+                self.image = self.images['MELEE_ENEMY']
+
             for member in group:
                 if self.rect.colliderect(member):
+                    self.moving = False
                     self.rect.move_ip(-move[0], -move[1])
-
+                    
+# 67 83
 
     def attack(self, direction: str = 'down'):
         pass
@@ -90,6 +110,8 @@ class MeleeEnemy(Enemy):
         super().__init__(cx, cy, image, borders, player, move_x, move_y, obstacles)
         self.cooldown = 4000
         self._rest = 0
+        self.animations = ('MELEE', 'MELEE')
+
 
     def tired(self) -> bool:
         now = pygame.time.get_ticks()  # getting relative variable

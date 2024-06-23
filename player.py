@@ -1,29 +1,27 @@
 import pygame
 from character import Character
 from item import PlayerSword
-
+from time import time
 
 class Player(Character):
 
     def __init__(self, cx, cy, images, border: tuple, obstacles=None, traps=None, weapon=None):
-        super().__init__(cx, cy, images['idle'][0], border)
+        super().__init__(cx, cy, images['idle'][0], border, obstacles)
         self.traps = traps
-        self.obstacles = obstacles
         self.cords = (0, 0)
         self.images = images  # hero animation images list
         self.current_images = self.images['idle']
         self.image_index = 0  # current animation index image
-        self.animation_delay = 10  # set animation delay
-        self.last_delay = self.animation_delay  # set last delay
         self.health = 100  # starting player health
         self.max_health = 100  # maximum player health
-        self.border = border  # border for window dimensions
         self.weapon = weapon  # image of weapon
         self.attacks = pygame.sprite.Group()
         self._lastcooldown = 0
         self.cooldown = 3000
         self.is_attacking = False #tracking if player is attacking
         self.attack_direction = None #tracking the attack direction
+        self.items = []  # for players items - only works with 'force' now
+        self.range = 200  # could be eddited by items
 
     def check_collision(self, move):
         self.rect.move_ip(move)
@@ -32,22 +30,22 @@ class Player(Character):
         if pygame.sprite.spritecollideany(self, self.traps):
             self.take_damage(15)
 
-    def get_event(self, **kwargs):
+    def _get_event(self, **kwargs):
         # Player moves by 6 pixels when key pressed
         key_pressed = kwargs['key_pressed']
         if key_pressed[pygame.K_UP]:
             self.check_collision([0, -6])
             self.current_images = self.images['up']  #switch to up movement images
-        elif key_pressed[pygame.K_DOWN]:
+        if key_pressed[pygame.K_DOWN]:
             self.check_collision([0, 6])
             self.current_images = self.images['down']  #switch to down movement images
-        elif key_pressed[pygame.K_LEFT]:
+        if key_pressed[pygame.K_LEFT]:
             self.check_collision([-6, 0])
             self.current_images = self.images['left']  #switch to left movement images
-        elif key_pressed[pygame.K_RIGHT]:
+        if key_pressed[pygame.K_RIGHT]:
             self.check_collision([6, 0])
             self.current_images = self.images['right']  #switch to right movement images
-        else:
+        if not any(key_pressed):
             self.current_images = self.images['idle']  #switch back to idle images
 
         if kwargs['key_pressed'][pygame.K_w]:
@@ -68,9 +66,7 @@ class Player(Character):
             self.image_index += 1  # go to the next animation image
             if self.image_index >= len(self.current_images):  # setting loop
                 self.image_index = 0
-                if self.is_attacking:
-                    self.is_attacking = False #ending attacking animation
-                    self.current_images = self.images['idle']
+                self.current_images = self.images['idle']
             self.image = self.current_images[self.image_index]  # replace animation image with next index
             self.last_delay = self.animation_delay  # reset delay
 
@@ -83,10 +79,18 @@ class Player(Character):
 
         rotation = {'up': 90, 'down': -90, 'left': 180, 'right': 0}[direction]
 
-        if not self.attacks.sprites():
+        # change to - and not self.attacks.sprites() - if u want it to be single ranged strike
+        if self.weapon and len(self.attacks.sprites()) <=2 and self.image_index == len(self.current_images) - 3:
             rotated_weapon = pygame.transform.rotate(self.weapon, rotation)
             attack = PlayerSword(cx=position[0], cy=position[1], image=rotated_weapon, borders=self.borders, direction=direction, owner=self)
             self.attacks.add(attack)
+            if 'force' in self.items and len(self.attacks.sprites()) <=1:
+                attack = PlayerSword(cx=position[0], cy=position[1], image=rotated_weapon, 
+                                     borders=self.borders, direction=direction, owner=self,
+                                     range=self.range)
+                attack.ranged = True
+                self.attacks.add(attack)
+
 
 
     def draw(self, display):
@@ -95,10 +99,10 @@ class Player(Character):
         self.attacks.update(display)
 
     def draw_health_bar(self, display):
-        health_bar_width = self.border[0] // 2  # half the window width
+        health_bar_width = self.borders[0] // 2  # half the window width
         health_bar_height = 20  # health bar height
-        health_bar_x = (self.border[0] - health_bar_width) // 2  # health bar centered
-        health_bar_y = self.border[1] - health_bar_height - 20  # health bar on bottom
+        health_bar_x = (self.borders[0] - health_bar_width) // 2  # health bar centered
+        health_bar_y = self.borders[1] - health_bar_height - 20  # health bar on bottom
 
         health_percentage = self.health / self.max_health  # health percentage
         current_health_width = int(health_bar_width * health_percentage)  # actual health
@@ -110,9 +114,11 @@ class Player(Character):
         pygame.draw.rect(display, health_bar_color, (health_bar_x, health_bar_y, current_health_width, health_bar_height)) #health bar
 
     def take_damage(self, amount):  # take damage method, decreasing health level
-        self.health -= amount
-        if self.health < 0:
-            self.health = 0
+        if not self.immune():
+            self.health -= amount
+            if self.health < 0:
+                self.health = 0
+            self.damaged_time = time()
 
     def heal(self, amount):  # increasing health level method
         self.health += amount

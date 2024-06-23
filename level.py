@@ -11,10 +11,10 @@ class Level:
         self.obstacle_gen = Obstacles(borders)
         self.doors = doors
         self.buffs = pygame.sprite.Group()
-        self.difficulty = 3
+        self.difficulty = 5
         self.background = background
         self.surface = surface
-        self.enemies = {0: (MeleeEnemy, self.images['MELEE_ENEMY']), 1: (RangeEnemy, self.images['RANGE_ENEMY'])}
+        self.enemies = {0: MeleeEnemy, 1: RangeEnemy}
         self.player = player
         self.set_of_enemies = pygame.sprite.Group()
         self.borders = borders
@@ -25,13 +25,13 @@ class Level:
     def new_level(self, first=None) -> None:
         if not first:
             self.obstacle_gen.random_gen(self.images['CRYSTAL_OBSTACLE'])
-            for _ in range(randint(0, self.difficulty)):
+            for _ in range(randint(1, self.difficulty)):
                 # shot purpose is to choose melee or range enemy and their image
                 shot = randint(0, len(self.enemies) - 1)
-                new = (self.enemies[shot][0]
+                new = (self.enemies[shot]
                        (randint(0, self.borders[0]),
                         randint(0, self.borders[1]),
-                        self.enemies[shot][1],
+                        self.images,
                         self.borders,
                         self.player, obstacles=self.obstacle_gen.obstacles))
                 self.set_of_enemies.add(new)
@@ -68,7 +68,9 @@ class Level:
             self.doors.draw(screen)
         self.buffs.draw(screen)
         self.obstacle_gen.draw(self.surface)
-        self.set_of_enemies.draw(screen)
+        # self.set_of_enemies.draw(screen)
+        for enemy in self.set_of_enemies:
+            enemy.draw(screen)
 
     # def pause(self):
     #     pass
@@ -78,7 +80,7 @@ class Level:
         collided_enemy = pygame.sprite.spritecollideany(self.player, self.set_of_enemies)
         if pygame.sprite.spritecollideany(self.player, self.set_of_enemies):
             if current_time - self.last_damage_time >= 1000:  # interval between last taking damage
-                self.player.take_damage(2)  # -2hp
+                self.player.take_damage(20)  # -2hp
                 self.last_damage_time = current_time  # reset damage timer
             # self.set_of_enemies.remove(collided_enemy)  # remove collided enemy
             # collided_enemy.kill()
@@ -89,7 +91,8 @@ class Level:
         self.set_of_enemies.empty()
         self.obstacle_gen.obstacles.empty()
         self.obstacle_gen.traps.empty()
-        self.new_level()
+        self.player.rect.center = (self.borders[0] // 2, self.borders[1] // 2)
+        self.new_level(first=True)
 
 
 class Obstacles:

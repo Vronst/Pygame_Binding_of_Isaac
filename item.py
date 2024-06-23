@@ -49,7 +49,7 @@ class EnemyBullet(Item):
 
 class PlayerSword(EnemyBullet):
 
-    def __init__(self, cx, cy, image, borders, direction: str, speed=8, range=100, owner=None):
+    def __init__(self, cx, cy, image, borders, direction: str, speed=8, range=25, owner=None):
         super().__init__(cx, cy, image, borders, direction, speed)
         self.start = (cx, cy)
         self.cooldown = 2000
@@ -57,6 +57,7 @@ class PlayerSword(EnemyBullet):
         self.returning = False
         self.range = range
         self.owner = owner
+        self.ranged = False  # if thru it is a projectile
 
     def _move(self, group=None):
         if not self.returning or not self.owner:
@@ -67,6 +68,8 @@ class PlayerSword(EnemyBullet):
         if not self.returning and (check1 < -self.range or check1 > self.range or check2 > self.range or check2 < -self.range):
             self.speed *= -1
             self.returning = True
+            if not self.ranged:
+                self.kill()
         if not self.owner:
             if self.returning and self.rect.center == self.start:
                 self.kill()
@@ -90,7 +93,8 @@ class PlayerSword(EnemyBullet):
                     self.kill()
     
     def draw(self, surface):
-        surface.blit(self.image, self.rect)
+        if self.ranged:
+            surface.blit(self.image, self.rect)  
 
     def update(self, surface):
         self._move()
