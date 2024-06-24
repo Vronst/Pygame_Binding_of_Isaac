@@ -18,8 +18,8 @@ class Enemy(Character):
         self.cooldown = 2000  # cooldown time - now 2 seconds
         self._last_cooldown = pygame.time.get_ticks()
         self.health = health
-        self.image_index = 1
-        self.animations = ('ATTACK', 'WALK')
+        self.image_index = 1  # i didnt use list, just names, and named from 1...
+        self.animations = ('ATTACK', 'WALK')  # tuple containing names of these images without number
         
     # not used thus commented
     # def set_moves(self, x, y):

@@ -375,3 +375,9 @@ Table of content:
 **Methods**:
 
 - _update(surface)_ -> uses self.\_move() and self.draw().
+
+---
+
+<span id=immune>def immune(self) -> bool:</span> - function checks if object been hit, if so returns true.
+
+---

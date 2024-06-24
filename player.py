@@ -10,8 +10,7 @@ class Player(Character):
         self.traps = traps
         self.cords = (0, 0)
         self.images = images  # hero animation images list
-        self.current_images = self.images['idle']
-        self.image_index = 0  # current animation index image
+        self.current_images = self.images['idle']  # well...
         self.health = 100  # starting player health
         self.max_health = 100  # maximum player health
         self.weapon = weapon  # image of weapon
