@@ -99,6 +99,15 @@ def show_instructions():
         instructions_arrows_rect = instructions_arrows.get_rect(center=(DISPLAY[0] // 2, 350))
         instructions_background.blit(instructions_arrows, instructions_arrows_rect)
 
+        instructions_move = medium_font.render("attack", True, BLACK)
+        instructions_move_rect = instructions_move.get_rect(center=(DISPLAY[0] // 2, 450))
+        instructions_background.blit(instructions_move, instructions_move_rect)
+
+        #creating instruction arrows text
+        instructions_wasd = medium_font.render("W A S D", True, BLACK)
+        instructions_wasd_rect = instructions_arrows.get_rect(center=(DISPLAY[0] // 2, 500))
+        instructions_background.blit(instructions_wasd, instructions_wasd_rect)
+
         #creating back text
         instructions_back = small_font.render("press escape to return to the menu", True, BLACK)
         instructions_back_rect = instructions_back.get_rect(center=(DISPLAY[0] // 2, 600))
